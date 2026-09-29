@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Excel - Funciones y Prácticas</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        /* --- SECCION 1: FUNCIONES --- */
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .function-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .function-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .function-card h3 {
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            background: #eff6ff;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .function-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .syntax {
+            background: #f1f5f9;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            color: #334155;
+            word-break: break-all;
+        }
+
+        /* --- SECCION 2: DESCARGAS --- */
+        .downloads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .download-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .download-info h4 {
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .download-info span {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-download {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-download:hover {
+            background-color: #15803d;
+        }
+
+        /* --- SECCION 3: SUBIR ARCHIVOS --- */
+        .upload-area {
+            background: var(--card-bg);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 3rem 1rem;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-area p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn-upload {
+            background-color: var(--primary);
+            color: white;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-upload:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-submit {
+            background-color: #0f172a;
+            color: white;
+            display: none; /* Se muestra con JS al elegir archivos */
+            margin-top: 1rem;
+        }
+
+        .file-list {
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .file-list ul {
+            list-style: none;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .file-list li {
+            padding: 5px 0;
+            color: var(--text);
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+
+        .success-msg {
+            display: none;
+            color: var(--success);
+            font-weight: bold;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #e2e8f0;
+            color: var(--text-light);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            .download-item { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📊 Portal de Excel</h1>
+        <p>Material de estudio, prácticas y entrega de trabajos</p>
+    </header>
+
+    <main>
+        <!-- SECCIÓN 1: MATERIAL DE ESTUDIO -->
+        <section id="material">
+            <h2>📚 Material de Estudio: Funciones</h2>
+            <div class="functions-grid">
+                <div class="function-card">
+                    <h3>=SUMA()</h3>
+                    <p>Suma todos los números que se incluyen como argumentos o que se encuentran en el rango especificado.</p>
+                    <div class="syntax">=SUMA(A1:A10)</div>
+                </div>
+                <div class="function-card">
+                    <h3>=SUMAR.SI()</h3>
+                    <p>Suma los valores de un rango que cumplen con el criterio que se especifica.</p>
+                    <div class="syntax">=SUMAR.SI(rango, criterio, [rango_suma])</div>
+                </div>
+                <div class="function-card">
+                    <h3>=CONTAR()</h3>
+                    <p>Cuenta el número de celdas que contienen números en un rango.</p>
+                    <div class="syntax">=CONTAR(A1:A10)</div>
+                </div>
+                <div class="function-card">
+                    <h3>=CONTAR.SI()</h3>
+                    <p>Cuenta el número de celdas dentro de un rango que cumplen con un criterio específico.</p>
+                    <div class="syntax">=CONTAR.SI(rango, criterio)</div>
+                </div>
+                <div class="function-card">
+                    <h3>=PROMEDIO()</h3>
+                    <p>Devuelve el promedio (media aritmética) de sus argumentos, que pueden ser números o rangos.</p>
+                    <div class="syntax">=PROMEDIO(A1:A10)</div>
+                </div>
+                <div class="function-card">
+                    <h3>=MIN()</h3>
+                    <p>Devuelve el valor mínimo de una lista de argumentos numéricos o de un rango.</p>
+                    <div class="syntax">=MIN(A1:A10)</div>
+                </div>
+                <div class="function-card">
+                    <h3>=MAX()</h3>
+                    <p>Devuelve el valor máximo de una lista de argumentos numéricos o de un rango.</p>
+                    <div class="syntax">=MAX(A1:A10)</div>
+                </div>
+                <div class="function-card">
+                    <h3>=SI()</h3>
+                    <p>Evalúa una condición. Si es VERDADERO devuelve un valor, si es FALSERRO devuelve otro.</p>
+                    <div class="syntax">=SI(A1>10, "Aprobado", "Reprobado")</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: DESCARGAS -->
+        <section id="descargas">
+            <h2>📥 Actividades para Descargar</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-light);">Descarga los siguientes archivos Excel para resolver en clase. Recuerda aplicar las funciones vistas en el material.</p>
+            
+            <div class="downloads-list">
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4>Actividad 1: Contabilidad 2025 (Hoteles)</h4>
+                        <span>Cálculo de egresos, promedios y porcentajes por hotel.</span>
+                    </div>
+                    <a href="act1.xlsx" download class="btn btn-download">Descargar</a>
+                </div>
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4>Actividad 2: Control de Gastos Mensuales</h4>
+                        <span>Análisis de gastos, totales, máximos, mínimos y ajustes condicionales.</span>
+                    </div>
+                    <a href="act2.xlsx" download class="btn btn-download">Descargar</a>
+                </div>
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4>Actividad 3: Alquiler de Equipos Acuáticos</h4>
+                        <span>Recaudación por equipo y encargado, uso de SUMAR.SI y CONTAR.SI.</span>
+                    </div>
+                    <a href="act3.xlsx" download class="btn btn-download">Descargar</a>
+                </div>
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4>Actividad 4: Informe de Liquidaciones (Sueldos)</h4>
+                        <span>Cálculo de sueldos, descuentos, referencias absolutas y relativas.</span>
+                    </div>
+                    <a href="act4.xlsx" download class="btn btn-download">Descargar</a>
+                </div>
+                <div class="download-item">
+                    <div class="download-info">
+                        <h4>Actividad 5: Ventas de Calzado</h4>
+                        <span>Facturación, descuentos, IVA, puntos por venta y resumen por producto.</span>
+                    </div>
+                    <a href="act5.xlsx" download class="btn btn-download">Descargar</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: SUBIR ARCHIVOS -->
+        <section id="subir">
+            <h2>📤 Entregar Actividades Realizadas</h2>
+            <div class="upload-area">
+                <p>Selecciona tus archivos Excel completados para enviarlos al docente.</p>
+                <label for="fileInput" class="btn btn-upload">Seleccionar Archivos</label>
+                <input type="file" id="fileInput" multiple accept=".xlsx, .xls">
+                
+                <div class="file-list" id="fileList">
+                    <p><strong>Archivos seleccionados:</strong></p>
+                    <ul id="fileListItems"></ul>
+                    <button class="btn btn-submit" id="submitBtn">Enviar Trabajos</button>
+                </div>
+                
+                <p class="success-msg" id="successMsg">✅ ¡Trabajos enviados correctamente!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Portal de Excel - Material de Estudio</p>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const fileListItems = document.getElementById('fileListItems');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMsg = document.getElementById('successMsg');
+
+        // Cuando el usuario selecciona archivos
+        fileInput.addEventListener('change', function() {
+            fileListItems.innerHTML = ''; // Limpiar lista anterior
+            
+            if (this.files.length > 0) {
+                fileList.style.display = 'block';
+                submitBtn.style.display = 'inline-block';
+                successMsg.style.display = 'none';
+
+                // Mostrar los nombres de los archivos
+                for (let i = 0; i < this.files.length; i++) {
+                    const li = document.createElement('li');
+                    li.textContent = `📄 ${this.files[i].name}`;
+                    fileListItems.appendChild(li);
+                }
+            } else {
+                fileList.style.display = 'none';
+            }
+        });
+
+        // Cuando el usuario hace clic en "Enviar"
+        submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Simulación de envío
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                successMsg.style.display = 'block';
+                submitBtn.textContent = 'Enviar Trabajos';
+                submitBtn.disabled = false;
+                
+                // Limpiar el input de archivos
+                fileInput.value = '';
+                fileList.style.display = 'none';
+            }, 1500); // Simula 1.5 segundos de "carga"
+        });
+    </script>
+</body>
+</html>
